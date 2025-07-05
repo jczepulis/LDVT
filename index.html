@@ -5,56 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Guía de Fabricación de un LVDT para Dendrómetro</title>
   <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.6;
-      margin: 0 1rem 3rem 1rem;
-      color: #222;
-    }
-    h1, h2, h3 {
-      color: #0b468a;
-    }
-    nav {
-      background: #f0f4ff;
-      border-left: 4px solid #0b468a;
-      padding: 0.8rem 1rem;
-      margin-bottom: 1.5rem;
-    }
-    nav ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    nav li {
-      margin: 0.3rem 0;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1rem 0;
-    }
-    table th, table td {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-      text-align: left;
-    }
-    table th {
-      background: #e9eefc;
-    }
-    code, pre {
-      background: #fafafa;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    pre {
-      padding: 0.8rem;
-      overflow-x: auto;
-    }
-    .note {
-      background: #fffbe5;
-      border-left: 4px solid #ffc107;
-      padding: 0.8rem 1rem;
-      margin: 1rem 0;
-    }
+    body { font-family: Arial, Helvetica, sans-serif; line-height: 1.6; margin: 0 1rem 3rem 1rem; color: #222; }
+    h1, h2, h3 { color: #0b468a; }
+    nav { background: #f0f4ff; border-left: 4px solid #0b468a; padding: 0.8rem 1rem; margin-bottom: 1.5rem; }
+    nav ul { list-style: none; padding-left: 0; }
+    nav li { margin: 0.3rem 0; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    table th, table td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+    table th { background: #e9eefc; }
+    code, pre { background: #fafafa; border: 1px solid #ddd; border-radius: 4px; }
+    pre { padding: 0.8rem; overflow-x: auto; }
+    .note { background: #fffbe5; border-left: 4px solid #ffc107; padding: 0.8rem 1rem; margin: 1rem 0; }
   </style>
 </head>
 <body>
@@ -69,6 +30,7 @@
       <li><a href="#principio">Principio de funcionamiento</a></li>
       <li><a href="#parametros">Parámetros de diseño</a></li>
       <li><a href="#bobinas">Diseño y bobinado</a></li>
+      <li><a href="#bobinador">Bobinador automático</a></li>
       <li><a href="#mecanico">Montaje mecánico</a></li>
       <li><a href="#electronica">Electrónica de acondicionamiento</a></li>
       <li><a href="#vrms">Generar 5&nbsp;VRMS</a></li>
@@ -113,6 +75,89 @@
       <li><strong>Etiquetar bornes</strong>: <code>P−</code>, <code>P+</code>, <code>S− (común)</code>, <code>S1</code>, <code>S2</code>.</li>
       <li><strong>Blindar</strong>: insertar el conjunto en tubo mu‑metal Ø 10 mm, conectado a masa.</li>
     </ol>
+  </section>
+
+  <!-- Bobinador automático -->
+  <section id="bobinador">
+    <h2>3.1 Bobinador automático con motor paso a paso</h2>
+    <p>Para mejorar la repetibilidad del devanado, puedes construir un bobinador controlado por Arduino que sincronice la rotación del carrete con un sistema de guiado de hilo lineal. A continuación se describe un esquema mínimo y un ejemplo de código.</p>
+
+    <h3>3.1.1 Esquema eléctrico</h3>
+    <ul>
+      <li><strong>Microcontrolador:</strong> Arduino UNO o Nano.</li>
+      <li><strong>Motor paso a paso:</strong> NEMA 17 (200 pasos/rev).</li>
+      <li><strong>Driver:</strong> A4988 (o DRV8825) con <abbr title="Decay mode y micro‑paso configurables">MS1‑MS3</abbr> a 1/16 paso.</li>
+      <li><strong>Fuente externa:</strong> 12 V / 2 A para el motor.</li>
+      <li><strong>Interruptor de origen:</strong> microswitch en el eje de la corredera para homing.</li>
+      <li><strong>Corredera:</strong> husillo trapezoidal T8 + tuerca POM para guiar el hilo capa a capa.</li>
+    </ul>
+
+    <h3>Conexiones principales</h3>
+    <table>
+      <thead><tr><th>Elemento</th><th>Pines Arduino</th></tr></thead>
+      <tbody>
+        <tr><td>A4988 <code>DIR</code></td><td>D2</td></tr>
+        <tr><td>A4988 <code>STEP</code></td><td>D3 (Timer2)</td></tr>
+        <tr><td>A4988 <code>EN</code></td><td>D8</td></tr>
+        <tr><td>Microswitch Home</td><td>D9 (INPUT_PULLUP)</td></tr>
+        <tr><td>Alimentación lógica</td><td>5 V / GND</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3.1.2 Código Arduino ejemplo</h3>
+<pre><code class="language-cpp">// Bobinador LVDT – giro controlado y avance lineal (v0.1)
+#include &lt;AccelStepper.h&gt;
+
+#define DIR_PIN   2
+#define STEP_PIN  3
+#define EN_PIN    8
+#define HOME_PIN  9    // Microswitch NC a GND
+
+AccelStepper bobina(AccelStepper::DRIVER, STEP_PIN, DIR_PIN);
+
+const float PASOS_REV = 200.0;      // NEMA17 full‑steps
+const float MICROSTEP = 16.0;       // A4988 MS1‑3 = 1/16
+const float VUELTAS_TOTAL = 600.0;  // espiras objetivo (primaria)
+
+const float RPM = 200.0;            // velocidad de giro
+
+void setup() {
+  pinMode(EN_PIN, OUTPUT);
+  digitalWrite(EN_PIN, LOW);        // Habilita driver
+
+  pinMode(HOME_PIN, INPUT_PULLUP);
+
+  bobina.setMaxSpeed((RPM/60.0) * PASOS_REV * MICROSTEP);
+  bobina.setAcceleration(2000);
+
+  homeAxis();
+}
+
+void loop() {
+  // Bobinado simple: gira N vueltas y detiene
+  long pasosObjetivo = VUELTAS_TOTAL * PASOS_REV * MICROSTEP;
+  bobina.moveTo(pasosObjetivo);
+  while (bobina.distanceToGo() != 0) {
+    bobina.run();
+  }
+  // Fin — apaga el motor
+  digitalWrite(EN_PIN, HIGH);
+  while (true);
+}
+
+void homeAxis() {
+  bobina.setMaxSpeed(800);
+  bobina.moveTo(-10000);             // Retrocede hasta encontrar microswitch
+  while (digitalRead(HOME_PIN) == HIGH) {
+    bobina.run();
+  }
+  bobina.setCurrentPosition(0);
+}
+</code></pre>
+
+    <div class="note">
+      <strong>Ajustes:</strong> Cambia <code>VUELTAS_TOTAL</code> para cada bobina (primaria / secundarias). Para un guiado lineal sincronizado, añade un segundo motor paso a paso (corredera) y calcula <em>pitch</em> según diámetro de hilo y capa.
+    </div>
   </section>
 
   <!-- Montaje -->
@@ -215,7 +260,7 @@ void loop() {
   </section>
 
   <footer>
-    <p>Ing. Agr. José Czepulis</p>
+    <p>Última actualización: 5&nbsp;de&nbsp;julio de 2025. Compilado por ChatGPT (OpenAI).</p>
   </footer>
 </body>
 </html>
