@@ -16,114 +16,173 @@
     code, pre { background: #fafafa; border: 1px solid #ddd; border-radius: 4px; }
     pre { padding: 0.8rem; overflow-x: auto; }
     .note { background: #fffbe5; border-left: 4px solid #ffc107; padding: 0.8rem 1rem; margin: 1rem 0; }
+
+    /* Nuevos estilos para consistencia con el formato de registro de sensores */
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-header {
+      background-color: #f0f4ff;
+      border-left: 4px solid #0b468a;
+      padding: 10px 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      color: #0b468a;
+    }
+
+    .info-block {
+      background-color: #e9eefc;
+      border-left: 4px solid #0b468a;
+      padding: 10px 15px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    }
+
+    .code-block {
+      background-color: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .code-block pre {
+      margin: 0;
+      white-space: pre-wrap; /* Permite que el texto se ajuste dentro del pre */
+      word-wrap: break-word; /* Rompe palabras largas si es necesario */
+    }
+
   </style>
 </head>
 <body>
-  <h1>Guía de Fabricación de un <abbr title="Linear Variable Differential Transformer">LVDT</abbr> para Dendrómetro</h1>
+  <div class="container">
+    <h1>Guía de Fabricación de un <abbr title="Linear Variable Differential Transformer">LVDT</abbr> para Dendrómetro</h1>
 
-  <p>Esta guía práctica resume todos los pasos discutidos en las consultas previas para diseñar, construir y calibrar un LVDT de ±5&nbsp;mm de recorrido, adecuado para medir la expansión y contracción diaria de tallos o ramas en un dendrómetro.</p>
+    <p>Esta guía práctica resume todos los pasos discutidos en las consultas previas para diseñar, construir y calibrar un LVDT de $\pm 5\, \text{mm}$ de recorrido, adecuado para medir la expansión y contracción diaria de tallos o ramas en un dendrómetro.</p>
 
-  <!-- Índice -->
-  <nav>
-    <strong>Contenido</strong>
-    <ul>
-      <li><a href="#principio">Principio de funcionamiento</a></li>
-      <li><a href="#parametros">Parámetros de diseño</a></li>
-      <li><a href="#bobinas">Diseño y bobinado</a></li>
-      <li><a href="#bobinador">Bobinador automático</a></li>
-      <li><a href="#mecanico">Montaje mecánico</a></li>
-      <li><a href="#electronica">Electrónica de acondicionamiento</a></li>
-      <li><a href="#vrms">Generar 5&nbsp;VRMS</a></li>
-      <li><a href="#calibracion">Calibración</a></li>
-      <li><a href="#consejos">Consejos prácticos</a></li>
-      <li><a href="#referencias">Recursos de referencia</a></li>
-    </ul>
-  </nav>
+    <nav>
+      <strong>Contenido</strong>
+      <ul>
+        <li><a href="#principio">1. Principio de funcionamiento</a></li>
+        <li><a href="#parametros">2. Parámetros de diseño</a></li>
+        <li><a href="#bobinas">3. Diseño y bobinado</a></li>
+        <li><a href="#bobinador">3.1 Bobinador automático</a></li>
+        <li><a href="#mecanico">4. Montaje mecánico</a></li>
+        <li><a href="#electronica">5. Electrónica de acondicionamiento</a></li>
+        <li><a href="#vrms">6. Generación de $\text{5 V}_{\text{RMS}}$</a></li>
+        <li><a href="#calibracion">7. Calibración</a></li>
+        <li><a href="#consejos">8. Consejos prácticos</a></li>
+        <li><a href="#referencias">9. Recursos de referencia</a></li>
+      </ul>
+    </nav>
 
-  <!-- Principio -->
-  <section id="principio">
-    <h2>1. Principio de funcionamiento</h2>
-    <p>Un LVDT es un transformador diferencial lineal compuesto por tres bobinas coaxiales: una primaria (<em>P</em>) y dos secundarias (<em>S1</em> y <em>S2</em>), conectadas en oposición serie. Un núcleo ferromagnético móvil altera el acoplamiento entre <em>P</em> y las secundarias. La salida diferencial <code>V<sub>out</sub> = V<sub>S1</sub> - V<sub>S2</sub></code> varía casi linealmente con el desplazamiento&nbsp;del núcleo alrededor del punto nulo.</p>
-  </section>
+    <section id="principio">
+      <div class="section-header">
+        <h2>1. Principio de funcionamiento</h2>
+      </div>
+      <p>Un LVDT es un transformador diferencial lineal compuesto por tres bobinas coaxiales: una primaria ($\text{P}$) y dos secundarias ($\text{S1}$ y $\text{S2}$), conectadas en oposición serie. Un núcleo ferromagnético móvil altera el acoplamiento entre $\text{P}$ y las secundarias. La salida diferencial $\text{V}_{\text{out}} = \text{V}_{\text{S1}} - \text{V}_{\text{S2}}$ varía casi linealmente con el desplazamiento del núcleo alrededor del punto nulo.</p>
+    </section>
 
-  <!-- Parámetros -->
-  <section id="parametros">
-    <h2>2. Parámetros de diseño sugeridos</h2>
-    <table>
-      <thead>
-        <tr><th>Parámetro</th><th>Valor</th><th>Comentario</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Carrera útil</td><td>±5&nbsp;mm (10&nbsp;mm total)</td><td>Suficiente para dendrómetro portátil</td></tr>
-        <tr><td>Sensibilidad</td><td>≈ 2&nbsp;mV/V/mm</td><td>Con 3 VRMS&nbsp;→ ≈ 60 mV<sub>pp</sub> a escala completa</td></tr>
-        <tr><td>Frecuencia de excitación</td><td>5 kHz</td><td>Rechazo a 50/60 Hz y tamaño de bobina moderado</td></tr>
-        <tr><td>Núcleo</td><td>Permalloy Ø 4 mm × 30 mm</td><td>Alta permeabilidad, baja histéresis</td></tr>
-        <tr><td>Bobina (carrete)</td><td>Fibra de vidrio/PLA Ø 6 mm int., 8 mm ext., 22 mm long.</td><td>Secciones 6 + 10 + 6 mm con pestañas 0,5 mm</td></tr>
-        <tr><td>Alambre</td><td>AWG 36 (Ø 0,127 mm)</td><td>≈ 45 Ω por bobina</td></tr>
-        <tr><td>Espiras</td><td>P: 600 — S1/S2: 450</td><td>Devanar secundarias bifilarmente</td></tr>
-      </tbody>
-    </table>
-  </section>
+    <hr>
 
-  <!-- Bobinas -->
-  <section id="bobinas">
-    <h2>3. Diseño y bobinado de las bobinas</h2>
-    <ol>
-      <li><strong>Fabricar el carrete</strong>: imprimir o mecanizar con pestañas que separen las tres secciones. Barnizar y curar a 60 °C durante 1 h.</li>
-      <li><strong>Devanar la primaria</strong>: 600 espiras AWG 36 en 6 mm; velocidad ≈ 200 rpm. Impregnar con barniz epoxi al vacío.</li>
-      <li><strong>Devanar las secundarias</strong>: usar dos hilos simultáneos (bifilar) para garantizar igualdad, 450 espiras cada una.</li>
-      <li><strong>Etiquetar bornes</strong>: <code>P−</code>, <code>P+</code>, <code>S− (común)</code>, <code>S1</code>, <code>S2</code>.</li>
-      <li><strong>Blindar</strong>: insertar el conjunto en tubo mu‑metal Ø 10 mm, conectado a masa.</li>
-    </ol>
-  </section>
+    <section id="parametros">
+      <div class="section-header">
+        <h2>2. Parámetros de diseño sugeridos</h2>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Parámetro</th><th>Valor</th><th>Comentario</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Carrera útil</td><td>$\pm 5\, \text{mm}$ ($10\, \text{mm}$ total)</td><td>Suficiente para dendrómetro portátil</td></tr>
+          <tr><td>Sensibilidad</td><td>$\approx 2\, \text{mV/V/mm}$</td><td>Con $\text{3 V}_{\text{RMS}} \rightarrow \approx 60\, \text{mV}_{\text{pp}}$ a escala completa</td></tr>
+          <tr><td>Frecuencia de excitación</td><td>$\text{5 kHz}$</td><td>Rechazo a $50/60\, \text{Hz}$ y tamaño de bobina moderado</td></tr>
+          <tr><td>Núcleo</td><td>Permalloy $\emptyset\, \text{4 mm} \times \text{30 mm}$</td><td>Alta permeabilidad, baja histéresis</td></tr>
+          <tr><td>Bobina (carrete)</td><td>Fibra de vidrio/PLA $\emptyset\, \text{6 mm}$ int., $\text{8 mm}$ ext., $\text{22 mm}$ long.</td><td>Secciones $\text{6} + \text{10} + \text{6 mm}$ con pestañas $\text{0,5 mm}$</td></tr>
+          <tr><td>Alambre</td><td>AWG 36 ($\emptyset\, \text{0,127 mm}$)</td><td>$\approx 45\, \Omega$ por bobina</td></tr>
+          <tr><td>Espiras</td><td>P: 600 — S1/S2: 450</td><td>Devanar secundarias bifilarmente</td></tr>
+        </tbody>
+      </table>
+    </section>
 
-  <!-- Bobinador automático -->
-  <section id="bobinador">
-    <h2>3.1 Bobinador automático con motor paso a paso</h2>
-    <p>Para mejorar la repetibilidad del devanado, puedes construir un bobinador controlado por Arduino que sincronice la rotación del carrete con un sistema de guiado de hilo lineal. A continuación se describe un esquema mínimo y un ejemplo de código.</p>
+    <hr>
 
-    <h3>3.1.1 Esquema eléctrico</h3>
-    <ul>
-      <li><strong>Microcontrolador:</strong> Arduino UNO o Nano.</li>
-      <li><strong>Motor paso a paso:</strong> NEMA 17 (200 pasos/rev).</li>
-      <li><strong>Driver:</strong> A4988 (o DRV8825) con <abbr title="Decay mode y micro‑paso configurables">MS1‑MS3</abbr> a 1/16 paso.</li>
-      <li><strong>Fuente externa:</strong> 12 V / 2 A para el motor.</li>
-      <li><strong>Interruptor de origen:</strong> microswitch en el eje de la corredera para homing.</li>
-      <li><strong>Corredera:</strong> husillo trapezoidal T8 + tuerca POM para guiar el hilo capa a capa.</li>
-    </ul>
+    <section id="bobinas">
+      <div class="section-header">
+        <h2>3. Diseño y bobinado de las bobinas</h2>
+      </div>
+      <ol>
+        <li><strong>Fabricar el carrete</strong>: imprimir o mecanizar con pestañas que separen las tres secciones. Barnizar y curar a $60\, \text{°C}$ durante $1\, \text{h}$.</li>
+        <li><strong>Devanar la primaria</strong>: $600$ espiras AWG 36 en $\text{6 mm}$; velocidad $\approx 200\, \text{rpm}$. Impregnar con barniz epoxi al vacío.</li>
+        <li><strong>Devanar las secundarias</strong>: usar dos hilos simultáneos (bifilar) para garantizar igualdad, $450$ espiras cada una.</li>
+        <li><strong>Etiquetar bornes</strong>: $\text{P}-$, $\text{P}+$, $\text{S}- \text{(común)}$, $\text{S1}$, $\text{S2}$.</li>
+        <li><strong>Blindar</strong>: insertar el conjunto en tubo mu-metal $\emptyset\, \text{10 mm}$, conectado a masa.</li>
+      </ol>
+    </section>
 
-    <h3>Conexiones principales</h3>
-    <table>
-      <thead><tr><th>Elemento</th><th>Pines Arduino</th></tr></thead>
-      <tbody>
-        <tr><td>A4988 <code>DIR</code></td><td>D2</td></tr>
-        <tr><td>A4988 <code>STEP</code></td><td>D3 (Timer2)</td></tr>
-        <tr><td>A4988 <code>EN</code></td><td>D8</td></tr>
-        <tr><td>Microswitch Home</td><td>D9 (INPUT_PULLUP)</td></tr>
-        <tr><td>Alimentación lógica</td><td>5 V / GND</td></tr>
-      </tbody>
-    </table>
+    <hr>
 
-    <h3>3.1.2 Código Arduino ejemplo</h3>
+    <section id="bobinador">
+      <div class="section-header">
+        <h2>3.1 Bobinador automático con motor paso a paso</h2>
+      </div>
+      <p>Para mejorar la repetibilidad del devanado, puedes construir un bobinador controlado por Arduino que sincronice la rotación del carrete con un sistema de guiado de hilo lineal. A continuación se describe un esquema mínimo y un ejemplo de código.</p>
+
+      <h3>3.1.1 Esquema eléctrico</h3>
+      <ul>
+        <li><strong>Microcontrolador:</strong> Arduino UNO o Nano.</li>
+        <li><strong>Motor paso a paso:</strong> NEMA 17 ($200$ pasos/rev).</li>
+        <li><strong>Driver:</strong> A4988 (o DRV8825) con <abbr title="Decay mode y micro‑paso configurables">MS1-MS3</abbr> a $1/16$ paso.</li>
+        <li><strong>Fuente externa:</strong> $\text{12 V / 2 A}$ para el motor.</li>
+        <li><strong>Interruptor de origen:</strong> microswitch en el eje de la corredera para homing.</li>
+        <li><strong>Corredera:</strong> husillo trapezoidal T8 + tuerca POM para guiar el hilo capa a capa.</li>
+      </ul>
+
+      <h4>Conexiones principales</h4>
+      <table>
+        <thead><tr><th>Elemento</th><th>Pines Arduino</th></tr></thead>
+        <tbody>
+          <tr><td>A4988 <code>DIR</code></td><td>D2</td></tr>
+          <tr><td>A4988 <code>STEP</code></td><td>D3 (Timer2)</td></tr>
+          <tr><td>A4988 <code>EN</code></td><td>D8</td></tr>
+          <tr><td>Microswitch Home</td><td>D9 (INPUT_PULLUP)</td></tr>
+          <tr><td>Alimentación lógica</td><td>$\text{5 V / GND}$</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3.1.2 Código Arduino ejemplo</h3>
+      <div class="code-block">
 <pre><code class="language-cpp">// Bobinador LVDT – giro controlado y avance lineal (v0.1)
 #include &lt;AccelStepper.h&gt;
 
-#define DIR_PIN   2
-#define STEP_PIN  3
-#define EN_PIN    8
-#define HOME_PIN  9    // Microswitch NC a GND
+#define DIR_PIN    2
+#define STEP_PIN   3
+#define EN_PIN     8
+#define HOME_PIN   9     // Microswitch NC a GND
 
 AccelStepper bobina(AccelStepper::DRIVER, STEP_PIN, DIR_PIN);
 
-const float PASOS_REV = 200.0;      // NEMA17 full‑steps
-const float MICROSTEP = 16.0;       // A4988 MS1‑3 = 1/16
-const float VUELTAS_TOTAL = 600.0;  // espiras objetivo (primaria)
+const float PASOS_REV = 200.0;       // NEMA17 full‑steps
+const float MICROSTEP = 16.0;        // A4988 MS1‑3 = 1/16
+const float VUELTAS_TOTAL = 600.0;   // espiras objetivo (primaria)
 
-const float RPM = 200.0;            // velocidad de giro
+const float RPM = 200.0;             // velocidad de giro
 
 void setup() {
   pinMode(EN_PIN, OUTPUT);
-  digitalWrite(EN_PIN, LOW);        // Habilita driver
+  digitalWrite(EN_PIN, LOW);         // Habilita driver
 
   pinMode(HOME_PIN, INPUT_PULLUP);
 
@@ -134,7 +193,7 @@ void setup() {
 }
 
 void loop() {
-  // Bobinado simple: gira N vueltas y detiene
+  // Bobinado simple: gira N vueltas y detiene
   long pasosObjetivo = VUELTAS_TOTAL * PASOS_REV * MICROSTEP;
   bobina.moveTo(pasosObjetivo);
   while (bobina.distanceToGo() != 0) {
@@ -154,46 +213,57 @@ void homeAxis() {
   bobina.setCurrentPosition(0);
 }
 </code></pre>
+      </div>
 
-    <div class="note">
-      <strong>Ajustes:</strong> Cambia <code>VUELTAS_TOTAL</code> para cada bobina (primaria / secundarias). Para un guiado lineal sincronizado, añade un segundo motor paso a paso (corredera) y calcula <em>pitch</em> según diámetro de hilo y capa.
-    </div>
-  </section>
+      <div class="note">
+        <strong>Ajustes:</strong> Cambia <code>VUELTAS_TOTAL</code> para cada bobina (primaria / secundarias). Para un guiado lineal sincronizado, añade un segundo motor paso a paso (corredera) y calcula <em>pitch</em> según diámetro de hilo y capa.
+      </div>
+    </section>
 
-  <!-- Montaje -->
-  <section id="mecanico">
-    <h2>4. Montaje mecánico</h2>
-    <p>Deslizar el núcleo dentro de un tubo guía de PTFE (Ø 4,2 mm int.) fijado concéntricamente al carrete. Encapsular extremos con epoxi de baja contracción y sellar salida de cables (IP 54).</p>
-  </section>
+    <hr>
 
-  <!-- Electrónica -->
-  <section id="electronica">
-    <h2>5. Electrónica de acondicionamiento</h2>
-    <table>
-      <thead>
-        <tr><th>Bloque</th><th>Función</th><th>Componentes sugeridos</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Oscilador&nbsp;5&nbsp;kHz</td><td>Excitación senoidal 3 VRMS</td><td>AD9833 + buffer, XR2206, Wien&nbsp;Bridge</td></tr>
-        <tr><td>Excitador primario</td><td>Corriente 50‑100 mA</td><td>OPA548, LM675, etapa MOSFET clase‑AB</td></tr>
-        <tr><td>Pre‑amplificador</td><td>G=20–50 dB, alta Z<sub>in</sub></td><td>INA118, AD8421</td></tr>
-        <tr><td>Demodulación sync</td><td>Rectificación sincrónica</td><td>AD630 + filtro RC</td></tr>
-        <tr><td>ADC/MCU</td><td>Digitalización 12–16 bit</td><td>ESP32‑C3, STM32G0</td></tr>
-      </tbody>
-    </table>
+    <section id="mecanico">
+      <div class="section-header">
+        <h2>4. Montaje mecánico</h2>
+      </div>
+      <p>Deslizar el núcleo dentro de un tubo guía de PTFE ($\emptyset\, \text{4,2 mm}$ int.) fijado concéntricamente al carrete. Encapsular extremos con epoxi de baja contracción y sellar salida de cables (IP 54).</p>
+    </section>
 
-    <div class="note">
-      <strong>Tip:</strong> El <em>PGA970</em> de Texas Instruments integra excitación LVDT, demodulación y ADC de 24 bit en un solo chip.
-    </div>
-  </section>
+    <hr>
 
-  <!-- VRMS Generation -->
-  <section id="vrms">
-    <h2>6. Cómo generar 5&nbsp;VRMS a 5&nbsp;kHz</h2>
-    <h3>6.1 Arduino + PWM + Amplificador de Potencia</h3>
-    <p>El Arduino produce una onda PWM de 31,25&nbsp;kHz modulada con una tabla de seno de 128 puntos; un filtro RC la suaviza y un op‑amp de potencia la amplifica.</p>
+    <section id="electronica">
+      <div class="section-header">
+        <h2>5. Electrónica de acondicionamiento</h2>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Bloque</th><th>Función</th><th>Componentes sugeridos</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Oscilador $\text{5 kHz}$</td><td>Excitación senoidal $\text{3 V}_{\text{RMS}}$</td><td>AD9833 + buffer, XR2206, Wien Bridge</td></tr>
+          <tr><td>Excitador primario</td><td>Corriente $\text{50-100 mA}$</td><td>OPA548, LM675, etapa MOSFET clase-AB</td></tr>
+          <tr><td>Pre-amplificador</td><td>G=20–50 dB, alta Z<sub>in</sub></td><td>INA118, AD8421</td></tr>
+          <tr><td>Demodulación sync</td><td>Rectificación sincrónica</td><td>AD630 + filtro RC</td></tr>
+          <tr><td>ADC/MCU</td><td>Digitalización 12–16 bit</td><td>ESP32-C3, STM32G0</td></tr>
+        </tbody>
+      </table>
 
-<pre><code class="language-cpp">/* Seno 5 kHz con Arduino UNO (Timer 1, PWM 10 bits) */
+      <div class="note">
+        <strong>Tip:</strong> El <em>PGA970</em> de Texas Instruments integra excitación LVDT, demodulación y ADC de 24 bit en un solo chip.
+      </div>
+    </section>
+
+    <hr>
+
+    <section id="vrms">
+      <div class="section-header">
+        <h2>6. Cómo generar $\text{5 V}_{\text{RMS}}$ a $\text{5 kHz}$</h2>
+      </div>
+      <h3>6.1 Arduino + PWM + Amplificador de Potencia</h3>
+      <p>El Arduino produce una onda PWM de $\text{31,25 kHz}$ modulada con una tabla de seno de $128$ puntos; un filtro RC la suaviza y un op-amp de potencia la amplifica.</p>
+
+      <div class="code-block">
+<pre><code class="language-cpp">/* Seno 5 kHz con Arduino UNO (Timer 1, PWM 10 bits) */
 const uint8_t seno[128] = { /* 0‑255 table */ };
 void setup() {
   pinMode(9, OUTPUT);
@@ -204,63 +274,74 @@ void setup() {
 void loop() {
   for (uint8_t i = 0; i &lt; 128; i++) {
     OCR1A = seno[i] * 2;      // 8‑bit → 10‑bit
-    delayMicroseconds(1.6);    // ≈4,9 kHz
+    delayMicroseconds(1.6);    // ≈4,9 kHz
   }
 }
 </code></pre>
+      </div>
 
-    <p><strong>Filtro RC:</strong> R=2,2&nbsp;kΩ en serie, C=4,7&nbsp;µF a masa &rarr; fc≈15&nbsp;Hz.<br>
-       <strong>Amplificación:</strong> OPA548 no‑inversor con ganancia≈4,2 alimentado a ±12&nbsp;V.</p>
+      <p><strong>Filtro RC:</strong> R=$2,2\, \text{k}\Omega$ en serie, C=$4,7\, \text{µF}$ a masa $\rightarrow \text{fc}\approx 15\, \text{Hz}$.<br>
+      <strong>Amplificación:</strong> OPA548 no-inversor con ganancia$\approx 4,2$ alimentado a $\pm 12\, \text{V}$.</p>
 
-    <h3>6.2 Oscilador Wien Bridge + Buffer</h3>
-    <ul>
-      <li>R1=R2=3,2&nbsp;kΩ, C1=C2=10&nbsp;nF &rarr; f≈5&nbsp;kHz</li>
-      <li>OPA2134 con lámpara incandescente #327 como estabilizador de ganancia.</li>
-      <li>Buffer TIP41C/TIP42C push‑pull o LM675 en ganancia 1.</li>
-    </ul>
+      <h3>6.2 Oscilador Wien Bridge + Buffer</h3>
+      <ul>
+        <li>R1=R2=$3,2\, \text{k}\Omega$, C1=C2=$10\, \text{nF} \rightarrow \text{f}\approx 5\, \text{kHz}$</li>
+        <li>OPA2134 con lámpara incandescente #327 como estabilizador de ganancia.</li>
+        <li>Buffer TIP41C/TIP42C push-pull o LM675 en ganancia 1.</li>
+      </ul>
 
-    <h3>6.3 Generadores dedicados</h3>
-    <ul>
-      <li><strong>XR2206 / MAX038</strong>: simple RC para frecuencia; amplificar con etapa lineal.</li>
-      <li><strong>AD9833</strong>: DDS controlado por MCU, filtro RC, amplificador de potencia.</li>
-    </ul>
-  </section>
+      <h3>6.3 Generadores dedicados</h3>
+      <ul>
+        <li><strong>XR2206 / MAX038</strong>: simple RC para frecuencia; amplificar con etapa lineal.</li>
+        <li><strong>AD9833</strong>: DDS controlado por MCU, filtro RC, amplificador de potencia.</li>
+      </ul>
+    </section>
 
-  <!-- Calibración -->
-  <section id="calibracion">
-    <h2>7. Calibración</h2>
-    <ol>
-      <li><strong>Balanceo en nulo</strong>: con el núcleo centrado, ajustar offset del demodulador para V<sub>out</sub>=0.</li>
-      <li><strong>Linealidad</strong>: desplazar el núcleo en pasos de 0,5 mm y graficar V<sub>out</sub>; R² &gt; 0,999.</li>
-      <li><strong>Temperatura</strong>: ensayar de 10 °C a 40 °C; compensar en firmware (dV/dT).</li>
-      <li><strong>Calibración absoluta</strong>: fijador micrométrico + calibre digital 0,01&nbsp;mm; almacenar pendiente y offset en EEPROM.</li>
-    </ol>
-  </section>
+    <hr>
 
-  <!-- Consejos -->
-  <section id="consejos">
-    <h2>8. Consejos prácticos</h2>
-    <ul>
-      <li><strong>Igualdad de secundarias</strong>: devanado bifilar o pesaje de bobinas para minimizar offset.</li>
-      <li><strong>Ruido</strong>: pares trenzados y blindaje a tierra reducen captación de 50/60 Hz.</li>
-      <li><strong>Protección</strong>: encapsular con silicona neutra si se instala a campo.</li>
-      <li><strong>Demagnetización</strong>: aplicar seno decreciente 1&nbsp;kHz al núcleo antes de uso.</li>
-    </ul>
-  </section>
+    <section id="calibracion">
+      <div class="section-header">
+        <h2>7. Calibración</h2>
+      </div>
+      <ol>
+        <li><strong>Balanceo en nulo</strong>: con el núcleo centrado, ajustar offset del demodulador para $\text{V}_{\text{out}}=0$.</li>
+        <li><strong>Linealidad</strong>: desplazar el núcleo en pasos de $\text{0,5 mm}$ y graficar $\text{V}_{\text{out}}$; $\text{R}^2 > 0,999$.</li>
+        <li><strong>Temperatura</strong>: ensayar de $\text{10 °C}$ a $\text{40 °C}$; compensar en firmware ($\text{dV/dT}$).</li>
+        <li><strong>Calibración absoluta</strong>: fijador micrométrico + calibre digital $\text{0,01 mm}$; almacenar pendiente y offset en EEPROM.</li>
+      </ol>
+    </section>
 
-  <!-- Referencias -->
-  <section id="referencias">
-    <h2>9. Recursos de referencia</h2>
-    <ol>
-      <li>Tutorial OMEGA – fundamentos y frecuencias de excitación.</li>
-      <li>Singer Instruments – estructura interna y blindaje.</li>
-      <li>DIY Build Log – experiencia práctica con bobinas de 500‑700 espiras.</li>
-      <li>Texas Instruments <em>PGA970</em> – solución integrada para LVDT.</li>
-    </ol>
-  </section>
+    <hr>
+
+    <section id="consejos">
+      <div class="section-header">
+        <h2>8. Consejos prácticos</h2>
+      </div>
+      <ul>
+        <li><strong>Igualdad de secundarias</strong>: devanado bifilar o pesaje de bobinas para minimizar offset.</li>
+        <li><strong>Ruido</strong>: pares trenzados y blindaje a tierra reducen captación de $\text{50/60 Hz}$.</li>
+        <li><strong>Protección</strong>: encapsular con silicona neutra si se instala a campo.</li>
+        <li><strong>Desmagnetización</strong>: aplicar seno decreciente $\text{1 kHz}$ al núcleo antes de uso.</li>
+      </ul>
+    </section>
+
+    <hr>
+
+    <section id="referencias">
+      <div class="section-header">
+        <h2>9. Recursos de referencia</h2>
+      </div>
+      <ol>
+        <li>Tutorial OMEGA – fundamentos y frecuencias de excitación.</li>
+        <li>Singer Instruments – estructura interna y blindaje.</li>
+        <li>DIY Build Log – experiencia práctica con bobinas de 500‑700 espiras.</li>
+        <li>Texas Instruments <em>PGA970</em> – solución integrada para LVDT.</li>
+      </ol>
+    </section>
+  </div>
 
   <footer>
-    <p>Última actualización: 5&nbsp;de&nbsp;julio de 2025. Compilado por ChatGPT (OpenAI).</p>
+    <p>Última actualización: 5 de julio de 2025. Compilado por ChatGPT (OpenAI).</p>
   </footer>
 </body>
 </html>
